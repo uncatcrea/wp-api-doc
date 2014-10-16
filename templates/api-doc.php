@@ -103,6 +103,20 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     ul.toc-lvl-3 li {
         font-weight:normal;   
     }
+	
+	strong.arguments-title{
+		display:block;
+		margin: 15px 0 10px;
+		font-size: 20px;
+		color: #666;
+	}
+	
+	strong.return-title{
+		display:block;
+		margin: 15px 0 10px;
+		font-size: 20px;
+		color: #666;
+	}
     
 </style>
 
@@ -138,10 +152,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 									<?php //echo WpApiDoc::get_edit_link($item) ?>
 						      		<?php echo WpApiDoc::get_content($item) ?>
 									<?php if( $arguments = WpApiDoc::get_arguments($item) ): ?>
-										<div class="arguments"><?php echo $arguments ?></div>
+										<div class="arguments">
+											<strong class="arguments-title">Arguments :</strong>
+											<?php echo $arguments ?>
+										</div>
 									<?php endif ?>
 									<?php if( $return = WpApiDoc::get_return($item) ): ?>
-										<div class="return"><?php echo $return ?></div>
+										<div class="return">
+											<strong class="return-title">Returns :</strong>
+											<?php echo $return ?>
+										</div>
 									<?php endif ?>
 					      		</div>
 								<?php foreach($item->items as $sub_item): ?>
@@ -153,10 +173,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 										<?php //echo WpApiDoc::get_edit_link($sub_item) ?>
 										<?php echo WpApiDoc::get_content($sub_item) ?>
 										<?php if( $arguments = WpApiDoc::get_arguments($sub_item) ): ?>
-											<div class="arguments"><?php echo $arguments ?></div>
+											<div class="arguments">
+												<strong class="arguments-title">Arguments :</strong>
+												<?php echo $arguments ?>
+											</div>
 										<?php endif ?>
 										<?php if( $return = WpApiDoc::get_return($sub_item) ): ?>
-											<div class="return"><?php echo $return ?></div>
+											<div class="return">
+												<strong class="return-title">Returns :</strong>
+												<?php echo $return ?>
+											</div>
 										<?php endif ?>
 									</div>
 									<?php foreach($sub_item->items as $sub_sub_item): ?>
@@ -167,10 +193,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 											<?php endif ?>
 											<?php echo WpApiDoc::get_content($sub_sub_item) ?>
 											<?php if( $arguments = WpApiDoc::get_arguments($sub_sub_item) ): ?>
-												<div class="arguments"><?php echo $arguments ?></div>
+												<div class="arguments">
+													<strong class="arguments-title">Arguments :</strong>
+													<?php echo $arguments ?>
+												</div>
 											<?php endif ?>
 											<?php if( $return = WpApiDoc::get_return($sub_sub_item) ): ?>
-												<div class="return"><?php echo $return ?></div>
+												<div class="return">
+													<strong class="return-title">Returns :</strong>
+													<?php echo $return ?>
+												</div>
 											<?php endif ?>
 										</div>
 									<?php endforeach ?>
