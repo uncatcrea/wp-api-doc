@@ -11,7 +11,9 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 
 	class WpApiDoc {
 
-		private static $mother_page_id = 193;
+		private static $mother_page_id = array(
+			193,
+		);
 
 		public static function hooks() {
 			add_filter( 'template_include', array( __CLASS__, 'template_include' ) );
@@ -19,25 +21,36 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		}
 
 		public static function template_include( $template ) {
-			if ( is_page( self::$mother_page_id ) ) {
-				$plugin_path = plugin_dir_path( __FILE__ );
-				$template = $plugin_path . '/templates/api-doc.php';
+			foreach( self::$mother_page_id as $page_id ) {
+				if ( is_page( $page_id ) ) {
+					$plugin_path = plugin_dir_path( __FILE__ );
+					$template = $plugin_path . '/templates/api-doc.php';
+					break;
+				}
 			}
 			return $template;
 		}
 
 		public static function template_redirect() {
 			global $post;
-			if ( is_page() && $post->ID !== self::$mother_page_id && self::is_in_doc( $post ) ) {
-				wp_redirect( get_permalink( self::$mother_page_id ) . '#' . self::get_dom_id( $post ), 301 );
+			if ( !is_page() || in_array( $post->ID, self::$mother_page_id ) ) {
+				return;
+			}
+
+			$page_id = self::is_in_doc( $post );
+			if( !empty( $page_id ) ) {
+				wp_redirect( get_permalink( $page_id ) . '#' . self::get_dom_id( $post ), 301 );
 				exit();
 			}
 		}
 
 		public static function get_doc() {
+			$post = get_post();
+			$page_id = self::is_in_doc( $post );
+
 			$doc = new stdClass();
-			$doc->intro = get_page( self::$mother_page_id );
-			$doc->headings = apm_get_subpages( self::$mother_page_id );
+			$doc->intro = get_page( $page_id );
+			$doc->headings = apm_get_subpages( $page_id );
 			foreach ( $doc->headings as $k => $heading ) {
 				$doc->headings[$k]->items = apm_get_subpages( $heading->ID );
 				foreach ( $doc->headings[$k]->items as $i => $sub_item ) {
@@ -121,17 +134,17 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		}
 
 		private static function is_in_doc( $page ) {
-			$in_doc = $page->ID == self::$mother_page_id;
+			$in_doc = array_search( $page->ID, self::$mother_page_id );
 
 			while ( $page->post_parent ) {
 				$page = get_page( $page->post_parent );
-				if ( $page->ID == self::$mother_page_id ) {
-					$in_doc = true;
+				$in_doc = array_search( $page->ID, self::$mother_page_id );
+				if ( $in_doc !== false ) {
 					break;
 				}
 			}
 
-			return $in_doc;
+			return $in_doc !== false ? self::$mother_page_id[$in_doc] : $in_doc;
 		}
 
 	}
