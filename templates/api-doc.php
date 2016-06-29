@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		return $classes;
 	}
 	add_filter('body_class','api_doc_body_class');
-	
+
 	get_header();
 	global $woo_options;
 ?>
@@ -27,29 +27,29 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 <!-- Cowboy Coding ON -->
 
 <style type="text/css">
-	
+
     #main {
         width: 72%;
     }
-    
-    .hentry .entry { 
+
+    .hentry .entry {
 		font-size: 1em;
-		color: #444; 
+		color: #444;
 	}
-	
+
 	strong.header {
         font-size:20px;
         color:#1a212c;
     }
-	
+
     p {
         margin-bottom:1em
     }
-	
+
     h2,div.api-doc-item {
         margin-top:2em
     }
-	    
+
     .header .edit, h2 .edit, h1 .edit {
         border:1px #f36557 solid;
         border-radius:4px;
@@ -72,12 +72,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     h1 {
         font-size:48px;
     }
-    
+
     h2 {
         border-bottom:1px #eeeeee solid;
         font-size:36px;
     }
-    
+
     .api-doc-depth-2 .header {
         border-bottom:1px #eeeeee solid;
         display:block;
@@ -89,7 +89,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         font-style:italic;
         margin-right:10px;
     }
-    
+
     .col-right {
         border:1px #eeeeee solid;
         padding:10px 0px 10px 10px;
@@ -101,23 +101,23 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     }
 
     ul.toc-lvl-3 li {
-        font-weight:normal;   
+        font-weight:normal;
     }
-	
+
 	strong.arguments-title{
 		display:block;
 		margin: 15px 0 10px;
 		font-size: 20px;
 		color: #666;
 	}
-	
+
 	strong.return-title{
 		display:block;
 		margin: 15px 0 10px;
 		font-size: 20px;
 		color: #666;
 	}
-    
+
 </style>
 
 <!-- Cowboy Coding OFF -->
@@ -131,15 +131,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     		<section id="main">
 
                 <article <?php post_class(); ?>>
-	
+
     				<header>
-    			    	<h1 id="<?php echo WpApiDoc::get_dom_id($doc->intro) ?>"><?php echo WpApiDoc::get_title_with_edit_link($doc->intro) ?></h1>
+    			    	<h1 id="<?php echo WpApiDoc::get_dom_id($doc->intro) ?>"><?php echo WpApiDoc::get_title_with_edit_link( $doc->intro, false ) ?></h1>
     				</header>
 
                     <section class="entry">
-                    
+
                     	<?php echo WpApiDoc::get_content($doc->intro) ?>
-                    	
+
                     	<?php foreach($doc->headings as $heading): ?>
 							<h2 id="<?php echo WpApiDoc::get_dom_id($heading) ?>"><?php echo WpApiDoc::get_title_with_edit_link($heading) ?></h2>
 						    <?php echo WpApiDoc::get_content($heading) ?>
@@ -221,8 +221,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <aside class="col-right">
 				<!--<div style="">-->
                 <?php foreach($doc->headings as $heading): ?>
-		           	
-                
+
+
                     <!--<div id="" class="widget">-->
 		           		<h3>
 		           			<a href="#<?php echo WpApiDoc::get_dom_id($heading) ?>">
@@ -253,10 +253,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 									<?php endif ?>
 								</li>
 							<?php endforeach ?>
-						</ul>	
+						</ul>
 					<!--</div>-->
 				<?php endforeach ?>
-			
+
                     <!--</div>-->
             </aside>
 

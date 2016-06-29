@@ -89,10 +89,15 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 			return $title;
 		}
 
-		public static function get_title_with_edit_link( $page ) {
+		public static function get_title_with_edit_link( $page, $clickable = true ) {
 			$title = '';
 			if ( $page = get_post( $page ) ) {
 				$title = get_the_title( $page );
+
+				if( $clickable ) {
+					$title = '<a href="#' . self::get_dom_id( $page ) . '">' . $title . '</a>';
+				}
+
 				if ( $edit_link = self::get_edit_link( $page ) ) {
 					$title .= ' ' . $edit_link;
 				}
