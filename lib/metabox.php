@@ -9,10 +9,10 @@ class wp_api_doc_metabox {
 
 	public static function admin_menu() {
 
-		add_meta_box( 
-				'wpad_additionnal_data_metabox', 
-				__( 'API Doc' ), 
-				array( __CLASS__, 'meta_box_content' ), 
+		add_meta_box(
+				'wpad_additionnal_data_metabox',
+				__( 'API Doc' ),
+				array( __CLASS__, 'meta_box_content' ),
 				'page',
 				'normal', 'high'
 		);
@@ -79,7 +79,7 @@ class wp_api_doc_metabox {
 			table.wpad_metabox td:first-child{ width:100px; text-align: right; padding-right:10px }
 			input[name=wpad_usage]{ width:100% }
 		</style>
-		
+
 		<?php
 	}
 
@@ -88,7 +88,7 @@ class wp_api_doc_metabox {
 		// verify this came from the our screen and with proper authorization,
 		// because save_post can be triggered at other times
 
-		if ( !wp_verify_nonce( $_POST['wpad_metabox_save_nonce'], 'wpad_metabox_save' ) ) {
+		if ( !isset( $_POST['wpad_metabox_save_nonce'] ) || !wp_verify_nonce( $_POST['wpad_metabox_save_nonce'], 'wpad_metabox_save' ) ) {
 			return $post_id;
 		}
 
