@@ -8,12 +8,10 @@
 if ( !class_exists( 'WpApiDoc' ) ) {
 
 	require_once(dirname( __FILE__ ) . '/lib/metabox.php');
+	require_once(dirname( __FILE__ ) . '/lib/cache.php');
+	require_once(dirname( __FILE__ ) . '/lib/options-panel.php');
 
 	class WpApiDoc {
-
-		private static $mother_page_id = array(
-			193,
-		);
 
 		public static function hooks() {
 			add_filter( 'template_include', array( __CLASS__, 'template_include' ) );
@@ -21,7 +19,7 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		}
 
 		public static function template_include( $template ) {
-			foreach( self::$mother_page_id as $page_id ) {
+			foreach( WpApiDocOptions::getRootPageIds() as $page_id ) {
 				if ( is_page( $page_id ) ) {
 					$plugin_path = plugin_dir_path( __FILE__ );
 					$template = $plugin_path . '/templates/api-doc.php';
@@ -33,7 +31,7 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 
 		public static function template_redirect() {
 			global $post;
-			if ( !is_page() || in_array( $post->ID, self::$mother_page_id ) ) {
+			if ( !is_page() || in_array( $post->ID, WpApiDocOptions::getRootPageIds() ) ) {
 				return;
 			}
 
@@ -66,10 +64,23 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		public static function get_content( $page ) {
 			$content = '';
 			if ( $page = get_post( $page ) ) {
+				global $post;
+				$post = $page;
+				setup_postdata( $post );
+				
+				$page = apply_filters( 'wp_api_doc_page_before_get_content', $page );
+				
+				do_action( 'wp_api_doc_before_get_content', $page );
+				
 				$content = apply_filters( 'the_content', $page->post_content );
 				$content = str_replace( ']]>', ']]&gt;', $content );
 				$content = self::filter_content_links( $content );
+				
+				wp_reset_postdata();
 			}
+			
+			$content = apply_filters( 'wp_api_doc_get_content', $content );
+			
 			return $content;
 		}
 
@@ -139,17 +150,19 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		}
 
 		private static function is_in_doc( $page ) {
-			$in_doc = array_search( $page->ID, self::$mother_page_id );
+			$root_page_ids = WpApiDocOptions::getRootPageIds();
+			
+			$in_doc = array_search( $page->ID, $root_page_ids );
 
 			while ( $page->post_parent ) {
 				$page = get_page( $page->post_parent );
-				$in_doc = array_search( $page->ID, self::$mother_page_id );
+				$in_doc = array_search( $page->ID, $root_page_ids );
 				if ( $in_doc !== false ) {
 					break;
 				}
 			}
 
-			return $in_doc !== false ? self::$mother_page_id[$in_doc] : $in_doc;
+			return $in_doc !== false ? $root_page_ids[$in_doc] : $in_doc;
 		}
 
 	}

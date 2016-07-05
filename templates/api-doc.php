@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @subpackage Template
  */
 
+	WpApiDocCache::start();
+
 	$doc = WpApiDoc::get_doc();
 	//echo get_the_title($doc->intro)
 
@@ -264,4 +266,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
     </div><!-- /#content -->
 
-<?php get_footer(); ?>
+<?php 
+
+get_footer();
+
+WpApiDocCache::end();
