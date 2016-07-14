@@ -142,7 +142,9 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 			if ( preg_match_all( '/<a .*?(href="(.*?)").*?>/', $content, $matches, PREG_SET_ORDER ) ) {
 				foreach ( $matches as $match ) {
 					if ( $post_id = url_to_postid( $match[2] ) ) {
-						$content = str_replace( $match[1], 'href="#' . self::get_dom_id( $post_id ) . '"', $content );
+						if ( $root_page_id = self::is_in_doc( $post_id ) ) {
+							$content = str_replace( $match[1], 'href="'. get_permalink( $root_page_id ) .'#' . self::get_dom_id( $post_id ) . '"', $content );
+						}
 					}
 				}
 			}
@@ -150,18 +152,26 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		}
 
 		private static function is_in_doc( $page ) {
-			$root_page_ids = WpApiDocOptions::getRootPageIds();
+			$in_doc = false;
 			
-			$in_doc = array_search( $page->ID, $root_page_ids );
+			if ( is_numeric( $page ) ) {
+				$page = get_post( $page );
+			}
+			
+			if ( $page ) {
+				$root_page_ids = WpApiDocOptions::getRootPageIds();
 
-			while ( $page->post_parent ) {
-				$page = get_page( $page->post_parent );
 				$in_doc = array_search( $page->ID, $root_page_ids );
-				if ( $in_doc !== false ) {
-					break;
+
+				while ( $page->post_parent ) {
+					$page = get_page( $page->post_parent );
+					$in_doc = array_search( $page->ID, $root_page_ids );
+					if ( $in_doc !== false ) {
+						break;
+					}
 				}
 			}
-
+			
 			return $in_doc !== false ? $root_page_ids[$in_doc] : $in_doc;
 		}
 
