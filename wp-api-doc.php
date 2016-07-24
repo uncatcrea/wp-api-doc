@@ -174,6 +174,12 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 			
 			return $in_doc !== false ? $root_page_ids[$in_doc] : $in_doc;
 		}
+		
+		public static function getDocRootPages() {
+			$root_ids = WpApiDocOptions::getRootPageIds();
+			$query = new WP_Query( array( 'post__in' => $root_ids, 'post_type' => 'page', 'post_status' => 'publish', 'posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC' ) );
+			return !empty( $query->posts ) ? $query->posts : array();
+		}
 
 	}
 
