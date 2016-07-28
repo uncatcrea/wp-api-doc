@@ -151,7 +151,7 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 			return $content;
 		}
 
-		private static function is_in_doc( $page ) {
+		public static function is_in_doc( $page ) {
 			$in_doc = false;
 			
 			if ( is_numeric( $page ) ) {

@@ -11,7 +11,10 @@ class WpApiDocCache {
 	
 	public static function reset_on_page_save( $post_ID, $post ) {
 		if ( $post->post_type === 'page' ) {
-			self::reset( $post_ID );
+			if ( $mother_page_ID = WpApiDoc::is_in_doc( $post ) ) {
+				self::reset( $post_ID );
+				self::reset( $mother_page_ID );
+			}
 		}
 	}
 	
