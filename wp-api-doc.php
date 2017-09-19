@@ -2,7 +2,7 @@
 /*
   Plugin Name: WP API Doc
   Description: Build "API reference" oriented documentation from WordPress page trees
-  Version: 0.1
+  Version: 0.2
  */
 
 if ( !class_exists( 'WpApiDoc' ) ) {
@@ -45,10 +45,11 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		public static function get_doc() {
 			$post = get_post();
 			$page_id = self::is_in_doc( $post );
-
+            
 			$doc = new stdClass();
 			$doc->intro = get_page( $page_id );
 			$doc->headings = apm_get_subpages( $page_id );
+            var_dump($page_id,$doc->headings); 
 			foreach ( $doc->headings as $k => $heading ) {
 				$doc->headings[$k]->items = apm_get_subpages( $heading->ID );
 				foreach ( $doc->headings[$k]->items as $i => $sub_item ) {
@@ -162,14 +163,16 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 				$root_page_ids = WpApiDocOptions::getRootPageIds();
 
 				$in_doc = array_search( $page->ID, $root_page_ids );
-
-				while ( $page->post_parent ) {
-					$page = get_page( $page->post_parent );
-					$in_doc = array_search( $page->ID, $root_page_ids );
-					if ( $in_doc !== false ) {
-						break;
-					}
-				}
+                
+                if ( !$in_doc ) {
+                    while ( $page->post_parent ) {
+                        $page = get_page( $page->post_parent );
+                        $in_doc = array_search( $page->ID, $root_page_ids );
+                        if ( $in_doc !== false ) {
+                            break;
+                        }
+                    }
+                }
 			}
 			
 			return $in_doc !== false ? $root_page_ids[$in_doc] : $in_doc;
@@ -177,7 +180,7 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 		
 		public static function getDocRootPages() {
 			$root_ids = WpApiDocOptions::getRootPageIds();
-			$query = new WP_Query( array( 'post__in' => $root_ids, 'post_type' => 'page', 'post_status' => 'publish', 'posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC' ) );
+			$query = new WP_Query( array( 'post__in' => $root_ids, 'post_type' => 'page', 'post_status' => 'publish', 'posts_per_page' => -1, 'orderby' => 'post__in' ) );
 			return !empty( $query->posts ) ? $query->posts : array();
 		}
 
