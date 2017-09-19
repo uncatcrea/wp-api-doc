@@ -49,7 +49,7 @@ if ( !class_exists( 'WpApiDoc' ) ) {
 			$doc = new stdClass();
 			$doc->intro = get_page( $page_id );
 			$doc->headings = apm_get_subpages( $page_id );
-            var_dump($page_id,$doc->headings); 
+            		
 			foreach ( $doc->headings as $k => $heading ) {
 				$doc->headings[$k]->items = apm_get_subpages( $heading->ID );
 				foreach ( $doc->headings[$k]->items as $i => $sub_item ) {
